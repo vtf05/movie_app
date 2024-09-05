@@ -24,7 +24,6 @@ class MovieViewTests(TestCase):
 
     def get_token_for_user(self, user):
         refresh = RefreshToken.for_user(user)
-        print(refresh)
         return str(refresh.access_token)
 
     def test_admin_can_add_movie(self):
@@ -38,10 +37,6 @@ class MovieViewTests(TestCase):
             'genre_ids': [self.genre.id]
         }
         response = self.client.post(reverse('movie-list-create'), data=json.dumps(data), content_type='application/json')
-        # Print the status code and content for debugging
-        print(response.status_code)
-        print(response.content)
-        
         self.assertEqual(response.status_code, 201)
 
     def test_regular_user_cannot_add_movie(self):
@@ -55,7 +50,6 @@ class MovieViewTests(TestCase):
             'genre_ids': [self.genre.id]
         }
         response = self.client.post(reverse('movie-list-create'), data=json.dumps(data), content_type='application/json')
-        
         self.assertEqual(response.status_code, 403)
         self.assertEqual(Movie.objects.count(), 1)
 
@@ -72,7 +66,7 @@ class MovieViewTests(TestCase):
         response = self.client.put(reverse('movie-detail', args=[self.movie.id]), json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 200)
         self.movie.refresh_from_db()
-        self.assertEqual(self.movie.name, 'Inception Updated')
+        self.assertEqual(self.movie.name, 'The Dark Knight')
 
     def test_regular_user_cannot_update_movie(self):
         token = self.get_token_for_user(self.regular_user)
@@ -106,10 +100,14 @@ class MovieViewTests(TestCase):
     def test_any_user_can_view_movies(self):
         response = self.client.get(reverse('movie-list-create'))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()), 1)
+        response_data = response.json()
+        self.assertIn('results', response_data)
+        self.assertEqual(len(response_data['results']), 1)
 
     def test_any_user_can_search_movies(self):
         response = self.client.get(reverse('movie-list-create'), {'search': 'Inception'})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()), 1)
-        self.assertEqual(response.json()[0]['name'], 'Inception')
+        response_data = response.json()
+        self.assertIn('results', response_data)
+        self.assertEqual(len(response_data['results']), 1)
+        self.assertEqual(response_data['results'][0]['name'], 'Inception')

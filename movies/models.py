@@ -13,6 +13,11 @@ class Movie(models.Model):
     def __str__(self):
         return self.name
     
+    class Meta:
+        indexes = [
+            models.Index(fields=['name'], name='name_idx')
+        ]
+    
 class Genre(models.Model):
     name = models.CharField(max_length=100)
 

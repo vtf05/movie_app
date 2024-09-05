@@ -1,5 +1,6 @@
 import json
 from django.core.management.base import BaseCommand
+from django.db.utils import IntegrityError
 from movies.models import Movie, Genre
 
 class Command(BaseCommand):
@@ -17,10 +18,18 @@ class Command(BaseCommand):
                 'imdb_score': item['imdb_score'],
                 'imdb_popularity': item['99popularity'],
             }
-            movie, created = Movie.objects.get_or_create(**insert_item)
+            try:
+                movie, created = Movie.objects.get_or_create(**insert_item)
+            except IntegrityError:
+                movie = Movie.objects.get(name=insert_item['name'])
+                movie.director = insert_item['director']
+                movie.imdb_score = insert_item['imdb_score']
+                movie.imdb_popularity = insert_item['imdb_popularity']
+                movie.save()
+                created = False
+
             for genre_name in genres:
                 genre, _ = Genre.objects.get_or_create(name=genre_name)
-                print(genre)
                 movie.genres.add(genre)
             movie.save()
         

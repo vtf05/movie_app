@@ -1,7 +1,7 @@
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny, BasePermission
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.decorators import permission_classes
 from django.views.decorators.csrf import csrf_exempt
@@ -11,22 +11,28 @@ from django.contrib.auth.decorators import user_passes_test
 from .models import Movie
 from .serializers import MovieSerializer
 import json
+from functools import wraps
 
-def is_admin(user):
-    print(user.is_authenticated, user.is_staff, user.is_superuser)
-    return user.is_authenticated and (user.is_staff or user.is_superuser)
+
+def admin_required(func):
+    @wraps(func)
+    def wrapper(self, request, *args, **kwargs):
+        if not request.user.is_authenticated or not (request.user.is_staff or request.user.is_superuser):
+            return Response({'detail': 'Permission denied'}, status=403)
+        return func(self, request, *args, **kwargs)
+    return wrapper
 
 class CustomPagination(PageNumberPagination):
     page_size = 10
     page_size_query_param = 'page_size'
     max_page_size = 100
 
-@method_decorator(csrf_exempt, name='dispatch')
+
 class MovieListView(ListAPIView):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
     pagination_class = CustomPagination
-    permission_classes = [AllowAny]
+    permission_classes = [AllowAny]  # Allow any for GET requests
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -40,8 +46,8 @@ class MovieListView(ListAPIView):
             queryset = queryset.filter(genres__name__icontains=genre_query)
 
         return queryset
-
-    @method_decorator(user_passes_test(is_admin))
+    
+    @admin_required 
     def post(self, request):
         data = json.loads(request.body)
         serializer = MovieSerializer(data=data)
@@ -51,29 +57,24 @@ class MovieListView(ListAPIView):
         return Response(serializer.errors, status=400)
 
 
-
 class MovieRetrieveUpdateDestroyView(APIView):
-    @permission_classes([AllowAny])
+    permission_classes = [AllowAny]  # Allow any for GET requests
     def get(self, request, pk):
         movie = get_object_or_404(Movie, pk=pk)
         serializer = MovieSerializer(movie)
         return Response(serializer.data)
-
-    @permission_classes([IsAuthenticated])
-    @method_decorator(user_passes_test(is_admin))
+    
+    @admin_required 
     def put(self, request, pk):
-        print("movieee update")
         movie = get_object_or_404(Movie, pk=pk)
         data = json.loads(request.body)
         serializer = MovieSerializer(movie, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response({'message': 'Movie updated successfully'})
-        print(serializer.errors)
         return Response(serializer.errors, status=400)
     
-    @permission_classes([IsAuthenticated])
-    @method_decorator(user_passes_test(is_admin))
+    @admin_required 
     def delete(self, request, pk):
         movie = get_object_or_404(Movie, pk=pk)
         movie.delete()

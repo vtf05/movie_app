@@ -29,14 +29,12 @@ class MovieSerializer(serializers.ModelSerializer):
         return movie
 
     def update(self, instance, validated_data):
-        print(validated_data)
         genres = validated_data.pop('genre_ids')
         instance.name = validated_data.get('name', instance.name)
         instance.director = validated_data.get('director', instance.director)
         instance.imdb_score = validated_data.get('imdb_score', instance.imdb_score)
         instance.imdb_popularity = validated_data.get('imdb_popularity', instance.imdb_popularity)
         instance.save()
-
         # Clear existing genres and add new ones
         instance.moviegenre_set.all().delete()
         for genre in genres:

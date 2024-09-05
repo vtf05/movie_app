@@ -32,30 +32,38 @@ Query Parameters:
 Example Request:
 
 ```
-GET /movies/?search=Inception&genre=Action&page=1&page_size=10
+GET /movies/?search=Psycho
 ```
 
 Example Response:
 
 ```json
 {
-  "count": 100,
-  "next": "http://example.com/movies/?page=2",
+  "count": 1,
+  "next": null,
   "previous": null,
   "results": [
     {
-      "id": 1,
-      "name": "Inception",
-      "genres": ["Action", "Sci-Fi"],
-      "release_date": "2010-07-16"
-    },
-    {
-      "id": 2,
-      "name": "The Dark Knight",
-      "genres": ["Action", "Crime"],
-      "release_date": "2008-07-18"
+      "id": 500,
+      "name": "Psycho",
+      "director": "Alfred Hitchcock",
+      "imdb_score": 8.7,
+      "imdb_popularity": 87.0,
+      "genres": [
+        {
+          "id": 10,
+          "name": "Horror"
+        },
+        {
+          "id": 11,
+          "name": " Mystery"
+        },
+        {
+          "id": 12,
+          "name": " Thriller"
+        }
+      ]
     }
-    // More movie objects...
   ]
 }
 ```
@@ -71,17 +79,32 @@ Description: Retrieve detailed information about a specific movie.
 Example Request:
 
 ```
-GET /movies/1/
+GET /movies/500/
 ```
 
 Example Response:
 
 ```json
 {
-  "id": 1,
-  "name": "Inception",
-  "genres": ["Action", "Sci-Fi"],
-  "release_date": "2010-07-16"
+  "id": 500,
+  "name": "Psycho",
+  "director": "Alfred Hitchcock",
+  "imdb_score": 8.7,
+  "imdb_popularity": 87.0,
+  "genres": [
+    {
+      "id": 10,
+      "name": "Horror"
+    },
+    {
+      "id": 11,
+      "name": " Mystery"
+    },
+    {
+      "id": 12,
+      "name": " Thriller"
+    }
+  ]
 }
 ```
 
@@ -97,9 +120,11 @@ Request Body:
 
 ```json
 {
-  "name": "Inception",
-  "genres": ["Action", "Sci-Fi"],
-  "release_date": "2010-07-16"
+  "name": "Psycho-2",
+  "director": "Alfred Hitchcock",
+  "imdb_score": 8.7,
+  "imdb_popularity": 87.0,
+  "genre_ids": [10, 11]
 }
 ```
 
@@ -108,7 +133,7 @@ Example Response:
 ```json
 {
   "message": "Movie added successfully",
-  "movie_id": 1
+  "movie_id": "12"
 }
 ```
 
@@ -124,9 +149,11 @@ Request Body:
 
 ```json
 {
-  "name": "Inception",
-  "genres": ["Action", "Sci-Fi"],
-  "release_date": "2010-07-16"
+  "name": "Psycho-2s",
+  "director": "Alfred Hitchcock",
+  "imdb_score": 8.7,
+  "imdb_popularity": 87.0,
+  "genre_ids": [10, 11]
 }
 ```
 
@@ -159,5 +186,25 @@ Example Error Response:
 ```json
 {
   "detail": "Authentication credentials were not provided."
+}
+```
+
+```json
+{
+  "detail": "Given token not valid for any token type",
+  "code": "token_not_valid",
+  "messages": [
+    {
+      "token_class": "AccessToken",
+      "token_type": "access",
+      "message": "Token is invalid or expired"
+    }
+  ]
+}
+```
+
+```json
+{
+  "name": ["movie with this name already exists."]
 }
 ```
