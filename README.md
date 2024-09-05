@@ -65,16 +65,14 @@ Request Body:
 
 Example Response:
 
-````json
+```json
 {
-    "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcyNTY0MDM4MywiaWF0IjoxNzI1NTUzOTgzLCJqdGkiOiJmODIxMDdhMmQwMzE0YmI4ODBkYmE3MjA5NDFlNTU2NiIsInVzZXJfaWQiOjN9.Yn9JtT-2LVUh-Z3BthH157pQYRp4UrDwAm_oQAq9L-k",
-    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI1NTU0MjgzLCJpYXQiOjE3MjU1NTM5ODMsImp0aSI6ImMzNjVhN2M0YzBhMzRiNGFiZGI2NTljODBmYmUzYTNkIiwidXNlcl9pZCI6M30.ViFZasi8B6UG13syvKYxT0yhO1N2wL15Upudb5o8xgc"
+  "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcyNTY0MDM4MywiaWF0IjoxNzI1NTUzOTgzLCJqdGkiOiJmODIxMDdhMmQwMzE0YmI4ODBkYmE3MjA5NDFlNTU2NiIsInVzZXJfaWQiOjN9.Yn9JtT-2LVUh-Z3BthH157pQYRp4UrDwAm_oQAq9L-k",
+  "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI1NTU0MjgzLCJpYXQiOjE3MjU1NTM5ODMsImp0aSI6ImMzNjVhN2M0YzBhMzRiNGFiZGI2NTljODBmYmUzYTNkIiwidXNlcl9pZCI6M30.ViFZasi8B6UG13syvKYxT0yhO1N2wL15Upudb5o8xgc"
 }
 ```
 
-
 NOTE : use access token for authorization as a bearer token
-
 
 1. List Movies
 
@@ -94,11 +92,11 @@ Query Parameters:
 
 Example Request for search movies:
 
-````
+```
 
 GET /movies/?search=Psycho
 
-````
+```
 
 Example Response:
 
@@ -131,7 +129,7 @@ Example Response:
     }
   ]
 }
-````
+```
 
 Example Request for sorting movies based on rating :
 
