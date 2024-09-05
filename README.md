@@ -1,7 +1,5 @@
 # Movie API Documentation
 
-# Movie API Documentation
-
 This is the API documentation for the Movie application. The API allows users to retrieve, create, update, and delete movie information.
 
 ## Authentication
@@ -27,9 +25,10 @@ Query Parameters:
 - `search` (optional): Search term to filter movies by name.
 - `genre` (optional): Genre to filter movies by genre name.
 - `page` (optional): Page number for pagination.
+- `sort` (optional): Sort page based on rating or score
 - `page_size` (optional): Number of movies per page.
 
-Example Request:
+Example Request for search movies:
 
 ```
 GET /movies/?search=Psycho
@@ -61,6 +60,35 @@ Example Response:
         {
           "id": 12,
           "name": " Thriller"
+        }
+      ]
+    }
+  ]
+}
+```
+
+Example Request for sorting movies based on rating :
+
+```
+GET /movies/?sort_by=imdb_score&order=asc
+```
+
+```json
+{
+  "count": 1,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "name": "Inception",
+      "director": "Christopher Nolan",
+      "imdb_score": 8.8,
+      "imdb_popularity": 90.0,
+      "genres": [
+        {
+          "id": 1,
+          "name": "Action"
         }
       ]
     }

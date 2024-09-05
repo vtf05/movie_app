@@ -38,14 +38,29 @@ class MovieListView(ListAPIView):
         queryset = super().get_queryset()
         search_query = self.request.GET.get('search', '')
         genre_query = self.request.GET.get('genre', '')
+        sort_by = self.request.GET.get('sort_by', 'imdb_popularity')  # Default sorting by imdb_popularity
+        order = self.request.GET.get('order', 'desc')  # Default order is descending
 
+        # handle search
         if search_query:
             queryset = queryset.filter(name__icontains=search_query)
 
+        # handle genre search
         if genre_query:
             queryset = queryset.filter(genres__name__icontains=genre_query)
 
+        # handle sorting
+        if sort_by in ['imdb_score', 'created_at']:
+            if order == 'asc':
+                queryset = queryset.order_by(sort_by)
+            else:
+                queryset = queryset.order_by(f'-{sort_by}')
+        else:
+            # Default sorting by imdb_popularity in descending order
+            queryset = queryset.order_by('-imdb_popularity')
+
         return queryset
+
     
     @admin_required 
     def post(self, request):
