@@ -2,6 +2,8 @@
 
 This is the API documentation for the Movie application.
 
+the app is deployed at https://movieapp-production-10cf.up.railway.app/ you can access all the apis from here
+
 ## Features
 
 - List all movies with pagination
